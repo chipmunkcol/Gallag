@@ -97,7 +97,7 @@ function designBullet(){
     }
 }
 // 적 우주선 터지는 모션주려고 한건데 setTime이 비동기라 생각한대로 작동은 안함
-// 근데 게임성으론 이게 훨씬 나아서 그냥 놔둠..ㅎㅎ
+// 근데 게임성으론 이게 훨씬 나아서 그냥 놔둠ㅎㅎ
 const enemyBoom = (enemy) => {
     setTimeout(() => {
         enemyList.splice(enemy,1);  
@@ -188,9 +188,6 @@ const GameOver = () => {
     ctx.fillStyle = 'orange';
     ctx.font = "50px Arial"
 }
-const GameClear = () => {
-
-}
 
 function render(){
         ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
@@ -224,7 +221,7 @@ function main(){
         moveEnemy();
         lifeDown(GameOver); // 에너지 깎일때 마다 GameOver 콜백으로 부르자
         requestAnimationFrame(main);
-    } else if(!gameOver && score >= 200) {
+    } else if(!gameOver && score >= 200) { // 게임 클리어!
         ctx.drawImage(gameClear, 0, 0, canvas.width, canvas.height)
     } else {
         GameOver();
