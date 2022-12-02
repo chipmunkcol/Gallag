@@ -1,4 +1,9 @@
-# 게임 레시피🛸
+# 플레이 하기🛸
+[Play!](https://shooting-game-js-sand.vercel.app/)
+
+<img src="images/썸네일.png" width="450px" height="300px"></img>
+
+# 게임 레시피🍦
 
 1. canvas
 2. 배경, 우주선, 총알, 적우주선 등 이미지 재료 준비

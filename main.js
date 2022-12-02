@@ -96,9 +96,11 @@ function designBullet(){
         })
     }
 }
+// 적 우주선 터지는 모션주려고 한건데 setTime이 비동기라 생각한대로 작동은 안함
+// 근데 게임성으론 이게 훨씬 나아서 그냥 놔둠..ㅎㅎ
 const enemyBoom = (enemy) => {
     setTimeout(() => {
-        enemyList.splice(enemy,1);
+        enemyList.splice(enemy,1);  
     }, 50);
 }
 
@@ -172,7 +174,7 @@ const lifeUp = () => {   // 최적화를 위해 bullet 객체 attack()함수 콜
     for(let i=0; i<5; i++){
         if(score === 20*i && life === 0 && score !== 0) {
             life += 1;
-            console.log('life: ', life);
+            // console.log('life: ', life);
         }
     }
 }
