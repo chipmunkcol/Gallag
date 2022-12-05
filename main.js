@@ -7,7 +7,7 @@ canvas.width = 600;
 canvas.height = 700;
 document.body.appendChild(canvas);
 
-let backgroundImage, spaceshipImage, bulletImage, enemyImage, 
+let backgroundImage, spaceshipImage, bulletImage, enemyImage, enemyImage2,
     enemyBoomImage, lifeImage, gameOverImage, gameClear;
 let gameOver = false;
 let score = 0;
@@ -23,6 +23,8 @@ function loadImage(){
     bulletImage.src = "images/총알.png";
     enemyImage = new Image();
     enemyImage.src = "images/적.png";
+    enemyImage2 = new Image();
+    enemyImage2.src = "images/적2.png";
     enemyBoomImage = new Image();
     enemyBoomImage.src = "images/적폭발.png"
     lifeImage = new Image();
@@ -79,7 +81,7 @@ function designBullet(){
 
         bulletList.push(this)
     }
-    this.attack = function(lifeUp, enemyBoom){
+    this.attack = function(lifeUp){
         enemyList.map((enemy, i)=>{
             if(
                 this.y -20 <= enemy.y &&
@@ -90,19 +92,20 @@ function designBullet(){
                     this.alive = false; // 죽은 총알
                     enemy.alive = false; 
                     score++;
-                    enemyBoom(i);
-                    lifeUp(); // 적우주선 격추 후 콜백 함수로 lifeUp함수를 실행시켜준다             
+                    enemyList.splice(i,1)
+                    lifeUp(); // 적우주선 격추 후 콜백 함수로 lifeUp함수를 실행시켜준다 
+                    // enemyBoom(i);            
                 }
         })
     }
 }
+
 // 적 우주선 터지는 모션주려고 한건데 setTime이 비동기라 생각한대로 작동은 안함
-// 근데 게임성으론 이게 훨씬 나아서 그냥 놔둠ㅎㅎ
-const enemyBoom = (enemy) => {
-    setTimeout(() => {
-        enemyList.splice(enemy,1);  
-    }, 50);
-}
+// const enemyBoom = (enemy) => {
+//     setTimeout(() => {
+//         enemyList.splice(enemy,1);  
+//     }, 50);
+// }
 
 //총알 발사
 function shootBullet(){
@@ -143,6 +146,35 @@ setInterval(() =>
     createEnemy()
 , 70)
 
+//적2 생성
+let enemyList2 = [];
+
+function designEnemy2(){
+    this.create = function(){
+        this.x = Math.floor(Math.random()*570);
+        this.y = Math.floor(Math.random()*100);
+        this.radius = 25;
+
+        this.alive = true;
+        enemyList2.push(this)
+        
+        this.bounce()
+    }
+    this.bounce = function(){
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, Math.PI*2, false);
+        ctx.fill();
+    }
+}
+
+function createEnemy2(){
+    let enemy2 = new designEnemy2();
+    enemy2.create();
+}
+setInterval(() => 
+    createEnemy2()
+, 5000);
+
 //적 이동
 const moveEnemy = () => {
     enemyList.map((v,i)=>{
@@ -151,6 +183,18 @@ const moveEnemy = () => {
         } else {
             v.y += 5
         }
+    })
+}
+
+const moveEnemy2 = () => {
+    enemyList2.map((enemy, i)=>{
+        if(enemy.x < 25 || enemy.x > canvas.width-25){
+            enemy.speed = -enemy.speed 
+        } else {
+            enemy.x += enemy.speed;
+            console.log('enemy.x: ', enemy.x);
+        }
+        
     })
 }
 
@@ -163,7 +207,7 @@ const lifeDown = (GameOver) => {
             enemy.x - 45 <= spaceshipX  &&
             spaceshipX <= enemy.x + 15 
         ) {
-            life += -1;
+            life += 0;
             enemyList.splice(i,1)
             
             if(life < 0) {GameOver()}
@@ -194,7 +238,7 @@ function render(){
         ctx.drawImage(spaceshipImage, spaceshipX, spaceshipY, 60, 60);
         for (let i=0; i<bulletList.length; i++){
             if(bulletList[i].alive){
-                bulletList[i].attack(lifeUp, enemyBoom);
+                bulletList[i].attack(lifeUp);
                 ctx.drawImage(bulletImage, bulletList[i].x, bulletList[i].y, 10, 10)
             }
         };
@@ -202,7 +246,12 @@ function render(){
             if(enemyList[i].alive){
                 ctx.drawImage(enemyImage, enemyList[i].x, enemyList[i].y, 30, 30)
             } else {
-                ctx.drawImage(enemyBoomImage, enemyList[i].x, enemyList[i].y, 30, 30)
+                // ctx.drawImage(enemyBoomImage, enemyList[i].x, enemyList[i].y, 30, 30)
+            }
+        }
+        for (let i=0; i<enemyList2.length; i++){
+            if(enemyList2[i].alive){
+                ctx.drawImage(enemyImage2, enemyList2[i].x, enemyList2[i].y, 50, 50)
             }
         }
         ctx.fillText('score: '+ score, 20, 25);
@@ -219,6 +268,7 @@ function main(){
         spaceshipMove();
         bulletMove();
         moveEnemy();
+        moveEnemy2();
         lifeDown(GameOver); // 에너지 깎일때 마다 GameOver 콜백으로 부르자
         requestAnimationFrame(main);
     } else if(!gameOver && score >= 200) { // 게임 클리어!
