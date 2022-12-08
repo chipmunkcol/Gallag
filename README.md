@@ -1,4 +1,5 @@
 # 플레이 하기🛸
+수정중입니다~~ 정상적인 플레이 x
 [Play!](https://shooting-game-js-sand.vercel.app/)
 
 <img src="images/썸네일.png" width="300px" height="300px"></img>
