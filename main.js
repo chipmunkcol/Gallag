@@ -89,16 +89,28 @@ class designBullet {
                 if (this.y - 20 <= enemy.y &&
                     enemy.y <= this.y &&
                     this.x - 20 <= enemy.x &&
-                    enemy.x <= this.x) {
-                    this.alive = false; // 죽은 총알
-                    enemy.alive = false;
-                    score++;
-                    enemyList.splice(i, 1);
-                    lifeUp(); // 적우주선 격추 후 콜백 함수로 lifeUp함수를 실행시켜준다 
-
-                    // enemyBoom(i);            
+                    enemy.x <= this.x
+                ) {
+                this.alive = false; // 죽은 총알
+                // enemy.alive = false;
+                score++;
+                enemyList.splice(i, 1);
+                lifeUp(); // 적우주선 격추 후 콜백 함수로 lifeUp함수를 실행시켜준다 
                 }
             });
+            enemyList2.map((enemy2, i) => {
+                if (this.y - 40 <= enemy2.y &&
+                    enemy2.y <= this.y &&
+                    this.x - 40 <= enemy2.x &&
+                    enemy2.x <= this.x   
+                ) {
+                this.alive = false; // 죽은 총알
+                // enemy2.alive = false;
+                score++;
+                enemyList2.splice(i,1);
+                lifeUp();
+                }
+            })
         };
     }
 }
@@ -147,9 +159,9 @@ function createEnemy(){
     let enemy = new designEnemy();
     enemy.create();
 }
-// setInterval(() => 
-//     createEnemy()
-// , 70)
+setInterval(() => 
+    createEnemy()
+, 100)
 
 //적2 생성
 let enemyList2 = [];
@@ -163,11 +175,6 @@ class designEnemy2 {
         this.radius = 25;
         this.alive = true;
         
-        this.bounce = function () {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, Math.PI * 2, false);
-            ctx.fill();
-        };
         this.create = function () {
             enemyList2.push(this);
         };
@@ -182,11 +189,11 @@ class designEnemyBullet {
             this.alive = true;
 
             enemyBulletList.push(this)
-            console.log('this: ', this);
         }
     }
 }
 
+//적2 총알 발사
 function createEnemyBullet(enemyX, enemyY){
     let enemyBullet = new designEnemyBullet();
     enemyBullet.create(enemyX, enemyY);
@@ -195,14 +202,14 @@ function createEnemyBullet(enemyX, enemyY){
 function createEnemyBullet2(){
     for (let i=0; i<enemyList2.length; i++){
         if(enemyList2[i].alive){
-            createEnemyBullet(enemyList2[i].x, enemyList2[i].y)
+            createEnemyBullet(enemyList2[i].x + 15, enemyList2[i].y + 25)
         }
     }
 }
         
-// setInterval(() => {
-//     createEnemyBullet2()
-// }, 1000);
+setInterval(() => {
+    createEnemyBullet2()
+}, 500);
     
 
 
@@ -242,8 +249,7 @@ const moveEnemy = () => {
 
 const moveEnemy2 = () => {
     enemyList2.map((enemy)=>{
-
-        if(enemy.x <= 25 || enemy.x >= canvas.width-25){
+        if(enemy.x <= 0 || enemy.x >= canvas.width-50){
             enemy.speed *= -1; 
             enemy.x += enemy.speed;
         } else {
@@ -262,9 +268,21 @@ const lifeDown = (GameOver) => {
             enemy.x - 45 <= spaceshipX  &&
             spaceshipX <= enemy.x + 15 
         ) {
-            life += 0;
+            life += -1;
             enemyList.splice(i,1)
             
+            if(life < 0) {GameOver()}
+        } 
+    })
+    enemyBulletList.map((Ebullet, i)=>{
+        if( Ebullet.y - 40 <= spaceshipY &&  
+            spaceshipY <= Ebullet.y &&
+            Ebullet.x - 40 <= spaceshipX &&
+            spaceshipX <= Ebullet.x   
+        ) {
+            life += -1;
+            enemyBulletList.splice(i,1)
+
             if(life < 0) {GameOver()}
         }
     })
@@ -307,19 +325,18 @@ function render(){
         for (let i=0; i<enemyList2.length; i++){
             if(enemyList2[i].alive){
                 ctx.drawImage(enemyImage2, enemyList2[i].x, enemyList2[i].y, 50, 50)
-                enemyList2[i].bounce();
             }
         }
         for (let i=0; i<enemyBulletList.length; i++){
             if(enemyBulletList[i].alive) {
-                ctx.drawImage(enemyBulletImage, enemyBulletList[i].x, enemyBulletList[i].y, 15, 15)
+                ctx.drawImage(enemyBulletImage, enemyBulletList[i].x, enemyBulletList[i].y, 20, 20)
             }
         }
         ctx.fillText('score: '+ score, 20, 25);
         ctx.fillStyle = 'white';
         ctx.font = "20px Arial"
         if(life === 1){
-            ctx.drawImage(lifeImage, 120, 5, 25, 25)
+            ctx.drawImage(lifeImage, 120, 5, 30, 30)
         }
 }
 
