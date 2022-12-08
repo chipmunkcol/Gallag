@@ -7,7 +7,7 @@ canvas.width = 600;
 canvas.height = 700;
 document.body.appendChild(canvas);
 
-let backgroundImage, spaceshipImage, bulletImage, enemyImage, enemyImage2,
+let backgroundImage, spaceshipImage, bulletImage, enemyImage, enemyImage2, enemyBulletImage,
     enemyBoomImage, lifeImage, gameOverImage, gameClear;
 let gameOver = false;
 let score = 0;
@@ -27,6 +27,8 @@ function loadImage(){
     enemyImage2.src = "images/적2.png";
     enemyBoomImage = new Image();
     enemyBoomImage.src = "images/적폭발.png"
+    enemyBulletImage = new Image();
+    enemyBulletImage.src = "images/적총알.png"
     lifeImage = new Image();
     lifeImage.src = "images/본체.png"
     gameOverImage = new Image();
@@ -73,30 +75,31 @@ const spaceshipMove = () => {
 //총알 생성
 let bulletList = [];
 
-function designBullet(){
-    this.create = function(){
-        this.x = spaceshipX + 25;
-        this.y = spaceshipY - 10;
-        this.alive = true;
+class designBullet {
+    constructor() {
+        this.create = function () {
+            this.x = spaceshipX + 25;
+            this.y = spaceshipY - 10;
+            this.alive = true;
 
-        bulletList.push(this)
-    }
-    this.attack = function(lifeUp){
-        enemyList.map((enemy, i)=>{
-            if(
-                this.y -20 <= enemy.y &&
-                enemy.y <= this.y  &&
-                this.x -20 <= enemy.x &&
-                enemy.x <= this.x 
-            )   {
+            bulletList.push(this);
+        };
+        this.attack = function (lifeUp) {
+            enemyList.map((enemy, i) => {
+                if (this.y - 20 <= enemy.y &&
+                    enemy.y <= this.y &&
+                    this.x - 20 <= enemy.x &&
+                    enemy.x <= this.x) {
                     this.alive = false; // 죽은 총알
-                    enemy.alive = false; 
+                    enemy.alive = false;
                     score++;
-                    enemyList.splice(i,1)
+                    enemyList.splice(i, 1);
                     lifeUp(); // 적우주선 격추 후 콜백 함수로 lifeUp함수를 실행시켜준다 
+
                     // enemyBoom(i);            
                 }
-        })
+            });
+        };
     }
 }
 
@@ -129,12 +132,14 @@ const bulletMove = () => {
 //적 생성 (class 문법 사용해볼것!)
 let enemyList = [];
 
-function designEnemy(){
-    this.create = function(){
-        this.x = Math.floor(Math.random()*570);
+class designEnemy {
+    constructor() {
+        this.x = Math.floor(Math.random() * 570);
         this.y = 0;
         this.alive = true;
-        enemyList.push(this);
+        this.create = function () {
+            enemyList.push(this);
+        };
     }
 }
 
@@ -142,31 +147,77 @@ function createEnemy(){
     let enemy = new designEnemy();
     enemy.create();
 }
-setInterval(() => 
-    createEnemy()
-, 70)
+// setInterval(() => 
+//     createEnemy()
+// , 70)
 
 //적2 생성
 let enemyList2 = [];
+let enemyBulletList = [];
 
-function designEnemy2(){
-    this.create = function(){
-        this.x = Math.floor(Math.random()*570);
-        this.y = Math.floor(Math.random()*100);
+class designEnemy2 {
+    constructor() {
+        this.x = Math.floor(Math.random() * 570);
+        this.y = Math.floor(Math.random() * 100);
+        this.speed = 3;
         this.radius = 25;
-
         this.alive = true;
-        enemyList2.push(this)
         
-        this.bounce()
-    }
-    this.bounce = function(){
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, Math.PI*2, false);
-        ctx.fill();
+        this.bounce = function () {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, Math.PI * 2, false);
+            ctx.fill();
+        };
+        this.create = function () {
+            enemyList2.push(this);
+        };
     }
 }
 
+class designEnemyBullet {
+    constructor() {
+        this.create = function (enemyX, enemyY) {
+            this.x = enemyX;
+            this.y = enemyY;
+            this.alive = true;
+
+            enemyBulletList.push(this)
+            console.log('this: ', this);
+        }
+    }
+}
+
+function createEnemyBullet(enemyX, enemyY){
+    let enemyBullet = new designEnemyBullet();
+    enemyBullet.create(enemyX, enemyY);
+}
+
+function createEnemyBullet2(){
+    for (let i=0; i<enemyList2.length; i++){
+        if(enemyList2[i].alive){
+            createEnemyBullet(enemyList2[i].x, enemyList2[i].y)
+        }
+    }
+}
+        
+// setInterval(() => {
+//     createEnemyBullet2()
+// }, 1000);
+    
+
+
+
+//적 총알 움직임
+const enemyBulletMove = () => {
+    enemyBulletList.map((v,i) => {
+        if(v.y > canvas.height) {
+            enemyBulletList.splice(i,1)
+        } else {
+            v.y += 5
+        }
+    })
+}
+    
 function createEnemy2(){
     let enemy2 = new designEnemy2();
     enemy2.create();
@@ -175,24 +226,28 @@ setInterval(() =>
     createEnemy2()
 , 5000);
 
+
+
+
 //적 이동
 const moveEnemy = () => {
-    enemyList.map((v,i)=>{
-        if(v.y >= 690) {
+    enemyList.map((enemy,i)=>{
+        if(enemy.y >= 690) {
             enemyList.splice(i,1)
         } else {
-            v.y += 5
+            enemy.y += 5
         }
     })
 }
 
 const moveEnemy2 = () => {
-    enemyList2.map((enemy, i)=>{
-        if(enemy.x < 25 || enemy.x > canvas.width-25){
-            enemy.speed = -enemy.speed 
+    enemyList2.map((enemy)=>{
+
+        if(enemy.x <= 25 || enemy.x >= canvas.width-25){
+            enemy.speed *= -1; 
+            enemy.x += enemy.speed;
         } else {
             enemy.x += enemy.speed;
-            console.log('enemy.x: ', enemy.x);
         }
         
     })
@@ -252,6 +307,12 @@ function render(){
         for (let i=0; i<enemyList2.length; i++){
             if(enemyList2[i].alive){
                 ctx.drawImage(enemyImage2, enemyList2[i].x, enemyList2[i].y, 50, 50)
+                enemyList2[i].bounce();
+            }
+        }
+        for (let i=0; i<enemyBulletList.length; i++){
+            if(enemyBulletList[i].alive) {
+                ctx.drawImage(enemyBulletImage, enemyBulletList[i].x, enemyBulletList[i].y, 15, 15)
             }
         }
         ctx.fillText('score: '+ score, 20, 25);
@@ -267,6 +328,7 @@ function main(){
         render() // 랜더 => 그려준다
         spaceshipMove();
         bulletMove();
+        enemyBulletMove();
         moveEnemy();
         moveEnemy2();
         lifeDown(GameOver); // 에너지 깎일때 마다 GameOver 콜백으로 부르자
