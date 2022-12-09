@@ -169,7 +169,7 @@ let enemyBulletList = [];
 
 class designEnemy2 {
     constructor() {
-        this.x = Math.floor(Math.random() * 570);
+        this.x = Math.floor(Math.random() * 550);
         this.y = Math.floor(Math.random() * 100);
         this.speed = 3;
         this.radius = 25;
