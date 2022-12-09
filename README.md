@@ -1,5 +1,5 @@
 # 플레이 하기🛸
-수정중입니다~~ 정상적인 플레이 x
+
 [Play!](https://shooting-game-js-sand.vercel.app/)
 
 <img src="images/썸네일.png" width="300px" height="300px"></img>
@@ -35,5 +35,5 @@
     - constructor 문법 공부만 해봤는데 적용해보니까 좋았음, class 알듯 말듯하넹
  - requestAnimationFrame(main)으로 본인 함수 프레임단위로 계속 실행시키는거 진짜 신선했음 
     - 조금만 프로젝트 커져도 프레임 한도 걸어줘야 최적화 될듯 
- - 적 2 bounce 하는거랑 bullet이 생각한대로 안움지여줘서 머리좀 썼음
+ - level2 적 bounce 하는거랑 bullet이 생각한대로 안 움직여줘서 머리좀 썼음
   
