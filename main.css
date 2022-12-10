@@ -1,0 +1,9 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 99vw;
+    background-image: url('images/보노보노배경.jpg');
+    background-position: center;
+    background-repeat: repeat;
+}
