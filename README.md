@@ -2,7 +2,7 @@
 
 [Play!](https://shooting-game-js-sand.vercel.app/)
 
-<img src="images/썸네일.png" width="300px" height="300px"></img>
+<img src="https://user-images.githubusercontent.com/88928469/207858910-75b80d9c-f327-47ee-9ce6-597cff100656.png" width="300px" height="300px"></img>
 
 <br/>
 
@@ -21,7 +21,7 @@
 10. 밸런스 조정
 11. (추가) level2 적 생성
 12. level2 적 bullet 구현
-13. 우주선 터지는 모션 구현중
+13. 밸런스 조정
 
 
 <br/>
