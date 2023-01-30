@@ -1,6 +1,6 @@
 # 플레이 하기🛸
 
-[Play!](https://shooting-game-js-sand.vercel.app/)
+[Play!](https://gallag.vercel.app/)
 
 <img src="https://user-images.githubusercontent.com/88928469/207858910-75b80d9c-f327-47ee-9ce6-597cff100656.png" width="300px" height="300px"></img>
 
