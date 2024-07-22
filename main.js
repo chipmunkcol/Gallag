@@ -3,8 +3,26 @@ let canvas;
 let ctx;
 canvas = document.createElement("canvas");
 ctx = canvas.getContext("2d");
-canvas.width = 600;
-canvas.height = 700;
+// canvas.width = 600;
+// canvas.height = 650;
+
+if (window.innerWidth < 480) {
+  canvas.width = window.innerWidth - 10;
+  canvas.height = window.innerHeight - 30;
+} else {
+  canvas.width = window.innerWidth / 2;
+  canvas.height = window.innerHeight - 30;
+}
+
+window.addEventListener("resize", () => {
+  if (window.innerWidth < 480) {
+    canvas.width = window.innerWidth - 10;
+    canvas.height = window.innerHeight - 30;
+  } else {
+    canvas.width = window.innerWidth / 2;
+    canvas.height = window.innerHeight - 30;
+  }
+});
 document.body.appendChild(canvas);
 
 let backgroundImage,
@@ -149,7 +167,7 @@ let enemyList = [];
 
 class designEnemy {
   constructor() {
-    this.x = Math.floor(Math.random() * 570); // 랜덤한 x 좌표
+    this.x = Math.floor(Math.random() * (canvas.width - 50)) + 20; // 랜덤한 x 좌표
     this.y = 0; // 화면 상단에서 시작
     this.alive = true;
     this.create = function () {
@@ -170,7 +188,7 @@ let enemyBulletList = [];
 
 class designEnemy2 {
   constructor() {
-    this.x = Math.floor(Math.random() * 550); // 랜덤한 x 좌표
+    this.x = Math.floor(Math.random() * (canvas.width - 100)) + 50; // 랜덤한 x 좌표
     this.y = Math.floor(Math.random() * 100); // 랜덤한 y 좌표
     this.speed = 3; // 이동 속도
     this.radius = 25; // 크기
